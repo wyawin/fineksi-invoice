@@ -220,22 +220,38 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   signatureItem: {
-    width: '45%',
+    width: '30%',
   },
   signatureLabel: {
     fontSize: 10,
     color: '#666666',
-    marginBottom: 100,
   },
   signatureLine: {
     borderBottom: '1 solid #000000',
     width: '100%',
     marginBottom: 5,
+    marginTop: 100,
   },
   signatureName: {
     fontSize: 9,
     color: '#666666',
-    lineHeight: 1.4,
+    lineHeight: 1.4
+  },
+  signatureImage: {
+    width: 40,
+    marginBottom: 10,
+    position: 'absolute', 
+    left: 40,
+    top: 20
+  },
+  stampImage: {
+    width: 100,
+    position: 'absolute', 
+    left: 10,
+    top: 35
+  },
+  signatureContainer: {
+    position: 'relative',
   },
   paymentInfoText: {
     fontSize: 10,
@@ -441,15 +457,37 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
         </View>
 
         {/* Signature Section */}
-        <View style={styles.signatureSection}>
-          <View style={styles.signatureBox}>
-            <View style={styles.signatureItem}>
-              <Text style={styles.signatureLabel}>{t.authorizedSignature}</Text>
-              <View style={styles.signatureLine} />
-              <Text style={styles.signatureName}>Wildiyanto Yawin{'\n'}{t.signatureRole}</Text>
+        {invoice.withSignature ? 
+          <View style={styles.signatureSection}>
+            <View style={styles.signatureBox}>
+              <View style={styles.signatureItem}>
+                <Text style={styles.signatureLabel}>{t.authorizedSignature}</Text>
+                <View style={styles.signatureContainer}>
+                  <Image
+                    style={styles.signatureImage}
+                    src="/sig.png"
+                  />
+                  <Image
+                    style={styles.stampImage}
+                    src="/stamp.png"
+                  />
+                </View>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureName}>Wildiyanto Yawin{'\n'}{t.signatureRole}</Text>
+              </View>
             </View>
           </View>
-        </View>
+          :
+          <View style={styles.signatureSection}>
+            <View style={styles.signatureBox}>
+              <View style={styles.signatureItem}>
+                <Text style={styles.signatureLabel}>{t.authorizedSignature}</Text>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureName}>Wildiyanto Yawin{'\n'}{t.signatureRole}</Text>
+              </View>
+            </View>
+          </View>
+        }
 
         {/* Footer */}
         <View style={styles.footer}>
