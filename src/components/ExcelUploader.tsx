@@ -4,14 +4,19 @@ import * as XLSX from 'xlsx';
 import { Invoice } from '../types/Invoice';
 
 interface ExcelUploaderProps {
-  onDataLoaded: (invoices: Invoice[]) => void;
+  onDataLoaded: (invoices: Invoice[], dateOverrides: { invoiceDate: string; billingFromDate: string; billingToDate: string }) => void;
+  dateOverrides: {
+    invoiceDate: string;
+    billingFromDate: string;
+    billingToDate: string;
+  };
 }
 
 const handleTrueFalse = (value: string) => {
   return value.toString() === 'true' ? true : false;
 }
 
-const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
+const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrides }) => {
   const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -30,8 +35,8 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
             {
               id: (index + 1).toString(),
               invoiceNumber: row['InvoiceNumber'] || `${String(index + 1).padStart(3, '0')}`,
-              date: row['Date'] || new Date().toISOString().split('T')[0],
-              dueDate: row['Due Date'] || new Date(Date.now() + Number(row['PaymentTerms']) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              date: dateOverrides.invoiceDate || new Date().toISOString().split('T')[0],
+              dueDate: row['Due Date'] || new Date(new Date().setDate((new Date(dateOverrides.invoiceDate)).getDate() + Number(row['PaymentTerms']))).toISOString().split('T')[0],
               status: (row['Status']?.toLowerCase() || 'draft') as 'draft' | 'sent' | 'paid' | 'overdue',
               client: {
                 name: row['Client'] || 'Unknown Client',
@@ -63,7 +68,9 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
               total: Number(row['Total All']) || 0,
               notes: row['Notes'] || '',
               // New fields from Excel structure
-              paymentTerms: row['PaymentTerms'] || 14,
+              billingFromDate: dateOverrides.billingFromDate,
+              billingToDate: dateOverrides.billingToDate,
+              paymentTerms: Number(row['PaymentTerms']) || 14,
               language: row['Language'] || 'English',
               grossUp: row['GrossUp'],
               withSignature: Boolean(handleTrueFalse(row['WithSignature'])),
@@ -109,14 +116,14 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
         }
       );
 
-        onDataLoaded(invoices);
+        onDataLoaded(invoices, dateOverrides);
       } catch (error) {
         console.error('Error parsing Excel file:', error);
         alert('Error parsing Excel file. Please check the format and try again.');
       }
     };
     reader.readAsArrayBuffer(file);
-  }, [onDataLoaded]);
+  }, [onDataLoaded, dateOverrides]);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">

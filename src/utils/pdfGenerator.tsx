@@ -369,7 +369,8 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
               <Text style={styles.invoiceDetails}>
                 {t.invoiceNumber}: {invoice.invoiceNumber}{'\n'}
                 {t.date}: {formatDate(invoice.date, invoice.language)}{'\n'}
-                {t.dueDate}: {formatDate(invoice.dueDate, invoice.language)}
+                {t.dueDate}: {formatDate(invoice.dueDate, invoice.language)}{'\n'}
+                {t.billingPeriod}: {formatDate(invoice.billingFromDate, invoice.language)} - {formatDate(invoice.billingToDate, invoice.language)}
               </Text>
             </View>
           </View>

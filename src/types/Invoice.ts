@@ -34,6 +34,8 @@ export interface Invoice {
   total: number;
   notes?: string;
   // New fields from Excel structure
+  billingFromDate: string;
+  billingToDate: string;
   paymentTerms: number;
   language: string;
   grossUp: number;

@@ -4,6 +4,7 @@ export interface Translations {
   invoiceNumber: string;
   date: string;
   dueDate: string;
+  billingPeriod: string;
   paymentTerms: string;
   serviceDetails: string;
   serviceType: string;
@@ -53,6 +54,7 @@ export const translations: Record<string, Translations> = {
     invoiceNumber: 'Invoice Number',
     date: 'Date',
     dueDate: 'Due Date',
+    billingPeriod: 'Billing Period',
     paymentTerms: 'Payment Terms',
     serviceDetails: 'Service Details',
     serviceType: 'Description',
@@ -100,6 +102,7 @@ export const translations: Record<string, Translations> = {
     invoiceNumber: 'Nomor Faktur',
     date: 'Tanggal',
     dueDate: 'Jatuh Tempo',
+    billingPeriod: 'Periode Tagihan',
     paymentTerms: 'Syarat Pembayaran',
     serviceDetails: 'Detail Layanan',
     serviceType: 'Deskripsi',

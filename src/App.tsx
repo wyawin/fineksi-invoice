@@ -3,15 +3,41 @@ import { Invoice } from './types/Invoice';
 import ExcelUploader from './components/ExcelUploader';
 import InvoiceList from './components/InvoiceList';
 import { generateInvoicePDF } from './utils/pdfGenerator.tsx';
-import { Receipt, Sparkles } from 'lucide-react';
+import { Receipt, Sparkles, Calendar } from 'lucide-react';
 
 function App() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showUploader, setShowUploader] = useState(true);
+  
+  // Date states
+  const [invoiceDate, setInvoiceDate] = useState(() => {
+    return new Date().toISOString().split('T')[0];
+  });
+  
+  const [billingFromDate, setBillingFromDate] = useState(() => {
+    const date = new Date();
+    date.setDate(1);
+    date.setMonth(date.getMonth() - 1);
+    return date.toISOString().split('T')[0];
+  });
+  
+  const [billingToDate, setBillingToDate] = useState(() => {
+    const date = new Date();
+    date.setDate(0);
+    date.setMonth(date.getMonth());
+    return date.toISOString().split('T')[0];
+  });
 
-  const handleDataLoaded = (newInvoices: Invoice[]) => {
-    setInvoices(newInvoices);
+  const handleDataLoaded = (newInvoices: Invoice[], dateOverrides: { invoiceDate: string; billingFromDate: string; billingToDate: string }) => {
+    // Update invoices with the selected dates
+    const updatedInvoices = newInvoices.map(invoice => ({
+      ...invoice,
+      date: dateOverrides.invoiceDate,
+      billingFromDate: dateOverrides.billingFromDate,
+      billingToDate: dateOverrides.billingToDate
+    }));
+    setInvoices(updatedInvoices);
     setShowUploader(false);
   };
 
@@ -54,7 +80,65 @@ function App() {
 
         {/* Main Content */}
         {showUploader && (
-          <ExcelUploader onDataLoaded={handleDataLoaded} />
+          <>
+            {/* Date Selection Section */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Calendar className="w-6 h-6 text-blue-600" />
+                <h3 className="text-lg font-semibold text-gray-900">Invoice & Billing Period Settings</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label htmlFor="invoiceDate" className="block text-sm font-medium text-gray-700 mb-2">
+                    Invoice Date
+                  </label>
+                  <input
+                    type="date"
+                    id="invoiceDate"
+                    value={invoiceDate}
+                    onChange={(e) => setInvoiceDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="billingFromDate" className="block text-sm font-medium text-gray-700 mb-2">
+                    Billing Period From
+                  </label>
+                  <input
+                    type="date"
+                    id="billingFromDate"
+                    value={billingFromDate}
+                    onChange={(e) => setBillingFromDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="billingToDate" className="block text-sm font-medium text-gray-700 mb-2">
+                    Billing Period To
+                  </label>
+                  <input
+                    type="date"
+                    id="billingToDate"
+                    value={billingToDate}
+                    onChange={(e) => setBillingToDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <ExcelUploader 
+              onDataLoaded={handleDataLoaded}
+              dateOverrides={{
+                invoiceDate,
+                billingFromDate,
+                billingToDate
+              }}
+            />
+          </>
         )}
         
         {selectedInvoice ? (
