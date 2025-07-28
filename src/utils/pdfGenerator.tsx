@@ -446,12 +446,14 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
                   {t.accountName}: PT Finskor Teknologi Indonesia
                 </Text>
               </View>
+              {invoice.withTaxCode ? 
               <View style={styles.invoiceDetailsSection}>
                 <Text style={styles.paymentInfoText}>
                   {t.taxObjectCode}: 24.423.01{'\n'}
                   {t.billingCode}: 411128 423
                 </Text>
               </View>
+              : null}
             </View>
           </View>
         </View>
