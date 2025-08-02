@@ -104,8 +104,8 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
 
         onDataLoaded(invoices, dateOverrides);
       } catch (error) {
-        console.error('Error parsing Excel file:', error);
-        alert('Error parsing Excel file. Please check the format and try again.');
+        console.error('Error parsing file:', error);
+        alert('Error parsing file. Please check the format and try again.');
       }
     };
     reader.readAsArrayBuffer(file);
@@ -115,18 +115,12 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <div className="text-center">
         <FileSpreadsheet className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload Excel File</h3>
-        <p className="text-gray-600 mb-4">
-          Upload your Excel file with invoice data. Expected columns: Client, Legal Name, Address, Attn, PaymentTerms, 
-          Language, GrossUp, WithSignature, WithTaxCode, GrossUpInAdvance, InvoiceNumber, Total All, 
-          Amount Which Should Invoice, Discount, Discount Amount, Invoice Amount, and other financial service columns.
-        </p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload File</h3>
         <label className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-150 cursor-pointer">
           <Upload className="w-4 h-4" />
-          Choose Excel File
+          Choose File
           <input
             type="file"
-            accept=".xlsx,.xls"
             onChange={handleFileUpload}
             className="hidden"
           />

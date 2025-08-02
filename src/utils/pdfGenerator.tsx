@@ -296,13 +296,13 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
   } else {
     services = [
       { name: t.services.bankStatement, usage: invoice.usageBankStatement, pricing: invoice.bsGUAmount, total: Math.round(invoice.usageBankStatement * invoice.bsGUAmount) },
-      { name: t.services.freeBankStatement, usage: invoice.freeBankStatement * -1, pricing: invoice.bsGUAmount, total: Math.round(invoice.freeBankStatement * invoice.bsGUAmount) },
+      { name: t.services.freeBankStatement, usage: invoice.freeBankStatement * -1, pricing: invoice.bsGUAmount, total: Math.round(invoice.freeBankStatement * invoice.bsGUAmount * -1) },
       { name: t.services.creditHistory, usage: invoice.usageSLIK, pricing: invoice.slikGUAmount, total: Math.round(invoice.usageSLIK * invoice.slikGUAmount) },
-      { name: t.services.freeCreditHistory, usage: invoice.freeSLIK * -1, pricing: invoice.slikGUAmount, total: Math.round(invoice.freeSLIK * invoice.slikGUAmount) },
+      { name: t.services.freeCreditHistory, usage: invoice.freeSLIK * -1, pricing: invoice.slikGUAmount, total: Math.round(invoice.freeSLIK * invoice.slikGUAmount * -1) },
       { name: t.services.income, usage: invoice.usageIncome, pricing: invoice.incomeGUAmount, total: Math.round(invoice.usageIncome * invoice.incomeGUAmount) },
       { name: t.services.idp, usage: invoice.usageInvoice, pricing: invoice.idpGUAmount, total: Math.round(invoice.usageInvoice * invoice.idpGUAmount) },
-      { name: t.services.idp, usage: invoice.freeInvoice * -1, pricing: invoice.idpGUAmount, total: Math.round(invoice.freeInvoice * invoice.idpGUAmount) }
-    ].filter(service => service.usage > 0);
+      { name: t.services.idp, usage: invoice.freeInvoice * -1, pricing: invoice.idpGUAmount, total: Math.round(invoice.freeInvoice * invoice.idpGUAmount * -1) }
+    ].filter(service => Math.abs(service.usage) > 0);
   }
   
 

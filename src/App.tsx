@@ -141,21 +141,23 @@ function App() {
                 </div>
               </div>
             </div>
-            
-            <ExcelUploader 
-              onDataLoaded={handleDataLoaded}
-              dateOverrides={{
-                invoiceDate,
-                billingFromDate,
-                billingToDate
-              }}
-            />
+            {
+              headerConfig ?
+              <ExcelUploader 
+                onDataLoaded={handleDataLoaded}
+                dateOverrides={{
+                  invoiceDate,
+                  billingFromDate,
+                  billingToDate
+                }}
+              />
+              :
+              null
+            }
           </>
         )}
         
-        {selectedInvoice ? (
-          <></>
-        ) : (
+       
           <>
             {!showUploader && (
               <div className="mb-4 text-center">
@@ -173,7 +175,6 @@ function App() {
             onGeneratePDF={handleGeneratePDF}
           />
           </>
-        )}
 
         {/* Footer */}
         <div className="text-center mt-12 pt-8 border-t border-gray-200">
