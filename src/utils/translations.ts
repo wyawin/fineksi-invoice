@@ -26,7 +26,6 @@ export interface Translations {
   billingCode: string;
   signature: string;
   client: string;
-  authorizedSignature: string;
   thankYou: string;
   paymentDue: string;
   paymentDue2: string;
@@ -44,7 +43,6 @@ export interface Translations {
     freeIdp: string;
     minimumCommitment: string;
   };
-  signatureRole: string;
 }
 
 export const translations: Record<string, Translations> = {
@@ -76,7 +74,6 @@ export const translations: Record<string, Translations> = {
     billingCode: 'Kode Billing',
     signature: 'Signature',
     client: 'Client',
-    authorizedSignature: 'PT Finskor Teknologi Indonesia',
     thankYou: 'Thank you for trusting us!',
     paymentDue: 'Payment is due within',
     paymentDue2: 'days. Please include the invoice number on your payment.',
@@ -93,8 +90,7 @@ export const translations: Record<string, Translations> = {
       idp: 'Intelligent Document Processing Usage',
       freeIdp: 'Free Intelligent Document Processing Usage',
       minimumCommitment: 'Minimum Commitment Usage'
-    },
-    signatureRole: 'President Director'
+    }
   },
   id: {
     invoice: 'FAKTUR',
@@ -124,7 +120,6 @@ export const translations: Record<string, Translations> = {
     billingCode: 'Kode Billing',
     signature: 'Tanda Tangan',
     client: 'Klien',
-    authorizedSignature: 'PT Finskor Teknologi Indonesia',
     thankYou: 'Terima kasih telah mempercayai kami!',
     paymentDue: 'Pembayaran jatuh tempo dalam',
     paymentDue2: 'hari. Harap sertakan nomor faktur pada pembayaran Anda.',
@@ -141,8 +136,7 @@ export const translations: Record<string, Translations> = {
       idp: 'Penggunaan Intelligent Document Processing',
       freeIdp: 'Gratis Penggunaan Intelligent Document Processing',
       minimumCommitment: 'Minimum Komitmen Penggunaan'
-    },
-    signatureRole: 'Direktur Utama'
+    }
   },
 };
 

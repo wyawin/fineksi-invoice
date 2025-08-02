@@ -49,24 +49,6 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
                 address: row['Address'] || 'Address not provided',
                 attn: row['Attn'] || ''
               },
-              company: {
-                name: 'PT Finskor Teknologi Indonesia',
-                address: 'Gedung AD Premier Lt 9, Jl. TB Simatupang No.5,',
-                city: 'RT.5/RW.7, Ps. Minggu, Jakarta Selatan',
-                postalCode: '',
-                country: 'Indonesia',
-                email: 'support@fineksi.com',
-                phone: '+62 21 1234 5678'
-              },
-              items: [
-                {
-                  id: '1',
-                  description: 'Financial Services',
-                  quantity: 1,
-                  unitPrice: Number(row['Invoice Amount']) || 0,
-                  total: Number(row['Invoice Amount']) || 0
-                }
-              ],
               subtotal: Number(row['Invoice Amount']) || 0,
               taxRate: 11,
               total: Number(row['Total All']) || 0,

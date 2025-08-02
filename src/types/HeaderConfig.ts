@@ -5,6 +5,13 @@ export interface HeaderConfig {
     companyEmail: string;
     signature: string;
     stamp: string;
+    bankName: string;
+    bankAccountNumber: string;
+    taxObjectCode: string;
+    billingCode: string;
+    signatureName: string;
+    signatureRole: string;
+    signatureRoleEN: string;
   }
   
   export interface AppConfig {

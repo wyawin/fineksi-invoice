@@ -19,7 +19,6 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
     reader.onload = (e) => {
       try {
         const jsonData = JSON.parse(e.target?.result as string);
-        console.log(jsonData)
         // Validate required fields
         if (!jsonData.header) {
           throw new Error('Missing "header" object in JSON config');
@@ -27,7 +26,7 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
 
         const header = jsonData.header;
         if (!header.logo || !header.companyName || !header.companyAddress || !header.companyEmail || !header.signature || !header.stamp) {
-          throw new Error('Missing required header fields: logo, companyName, companyAddress, companyEmail, signature, stamp');
+          throw new Error('Missing required header fields');
         }
 
         const headerConfig: HeaderConfig = {
@@ -36,7 +35,14 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
           companyAddress: header.companyAddress,
           companyEmail: header.companyEmail,
           signature: header.signature,
-          stamp: header.stamp
+          stamp: header.stamp,
+          bankName: header.bankName,
+          bankAccountNumber: header.bankAccountNumber,
+          taxObjectCode: header.taxObjectCode,
+          billingCode: header.billingCode,
+          signatureName: header.signatureName,
+          signatureRole: header.signatureRole,
+          signatureRoleEN: header.signatureRoleEN,
         };
 
         onConfigLoaded(headerConfig);
@@ -50,29 +56,6 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
     };
     reader.readAsText(file);
   }, [onConfigLoaded]);
-
-  const downloadSampleConfig = () => {
-    const sampleConfig = {
-      header: {
-        logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
-        companyName: "Your Company Name",
-        companyAddress: "Your Company Address",
-        companyEmail: "contact@yourcompany.com",
-        signature: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
-        stamp: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
-      }
-    };
-
-    const blob = new Blob([JSON.stringify(sampleConfig, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'header-config-sample.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -94,9 +77,6 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
             <p><strong>Company:</strong> {currentConfig.companyName}</p>
             <p><strong>Address:</strong> {currentConfig.companyAddress}</p>
             <p><strong>Email:</strong> {currentConfig.companyEmail}</p>
-            <p><strong>Logo:</strong> {currentConfig.logo.startsWith('data:') ? 'Base64 Image' : 'Image URL'}</p>
-            <p><strong>Signature:</strong> {currentConfig.signature.startsWith('data:') ? 'Base64 Image' : 'Image URL'}</p>
-            <p><strong>Stamp:</strong> {currentConfig.stamp.startsWith('data:') ? 'Base64 Image' : 'Image URL'}</p>
           </div>
         </div>
       )}
@@ -117,14 +97,6 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
               className="hidden"
             />
           </label>
-
-          <button
-            onClick={downloadSampleConfig}
-            className="inline-flex items-center gap-2 bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-150"
-          >
-            <Settings className="w-4 h-4" />
-            Download Sample
-          </button>
         </div>
 
         {uploadStatus === 'success' && (
@@ -140,22 +112,6 @@ const JsonConfigUploader: React.FC<JsonConfigUploaderProps> = ({ onConfigLoaded,
             <span>Error: {errorMessage}</span>
           </div>
         )}
-
-        <div className="mt-4 text-xs text-gray-500">
-          <p>Required JSON structure:</p>
-          <pre className="bg-gray-100 p-2 rounded text-left mt-2 overflow-x-auto">
-{`{
-  "header": {
-    "logo": "base64_image_or_url",
-    "companyName": "Company Name",
-    "companyAddress": "Address Line",
-    "companyEmail": "email@company.com",
-    "signature": "base64_image_or_url",
-    "stamp": "base64_image_or_url"
-  }
-}`}
-          </pre>
-        </div>
       </div>
     </div>
   );

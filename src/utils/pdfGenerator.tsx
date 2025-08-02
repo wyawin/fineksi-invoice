@@ -447,16 +447,16 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
             <View style={styles.paymentInformationContent}>
               <View style={styles.billToSection}>
                 <Text style={styles.paymentInfoText}>
-                  {t.bankName}: PT Bank UOB Indonesia{'\n'}
-                  {t.accountNumber}: 3883039740{'\n'}
-                  {t.accountName}: PT Finskor Teknologi Indonesia
+                  {t.bankName}: {headerConfig?.bankName}{'\n'}
+                  {t.accountNumber}: {headerConfig?.bankAccountNumber}{'\n'}
+                  {t.accountName}: {headerConfig?.companyName}
                 </Text>
               </View>
               {invoice.withTaxCode ? 
               <View style={styles.invoiceDetailsSection}>
                 <Text style={styles.paymentInfoText}>
-                  {t.taxObjectCode}: 24.423.01{'\n'}
-                  {t.billingCode}: 411128 423
+                  {t.taxObjectCode}: {headerConfig?.taxObjectCode}{'\n'}
+                  {t.billingCode}: {headerConfig?.billingCode}
                 </Text>
               </View>
               : null}
@@ -469,7 +469,7 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
           <View style={styles.signatureSection}>
             <View style={styles.signatureBox}>
               <View style={styles.signatureItem}>
-                <Text style={styles.signatureLabel}>{t.authorizedSignature}</Text>
+                <Text style={styles.signatureLabel}>{headerConfig?.companyName}</Text>
                 <View style={styles.signatureContainer}>
                   <Image
                     style={styles.signatureImage}
@@ -481,7 +481,7 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
                   />
                 </View>
                 <View style={styles.signatureLine} />
-                <Text style={styles.signatureName}>Wildiyanto Yawin{'\n'}{t.signatureRole}</Text>
+                <Text style={styles.signatureName}>{headerConfig?.signatureName}{'\n'}{invoice.language === "en" ? headerConfig?.signatureRoleEN : headerConfig?.signatureRole}</Text>
               </View>
             </View>
           </View>
@@ -489,9 +489,9 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
           <View style={styles.signatureSection}>
             <View style={styles.signatureBox}>
               <View style={styles.signatureItem}>
-                <Text style={styles.signatureLabel}>{t.authorizedSignature}</Text>
+                <Text style={styles.signatureLabel}>{headerConfig?.companyName}</Text>
                 <View style={styles.signatureLine} />
-                <Text style={styles.signatureName}>Wildiyanto Yawin{'\n'}{t.signatureRole}</Text>
+                <Text style={styles.signatureName}>{headerConfig?.signatureName}{'\n'}{invoice.language === "en" ? headerConfig?.signatureRoleEN : headerConfig?.signatureRole}</Text>
               </View>
             </View>
           </View>

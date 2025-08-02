@@ -19,16 +19,6 @@ export interface Invoice {
     address: string;
     attn: string;
   };
-  company: {
-    name: string;
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
-    email: string;
-    phone: string;
-  };
-  items: InvoiceItem[];
   subtotal: number;
   taxRate: number;
   total: number;
