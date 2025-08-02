@@ -1,6 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, Image, pdf } from '@react-pdf/renderer';
 import { Invoice } from '../types/Invoice';
+import { HeaderConfig } from '../types/HeaderConfig';
 import { getTranslation } from './translations';
 
 const formatCurrency = (amount: any, showDecimalItem: boolean = false) => {
@@ -50,6 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#FFFFFF',
     lineHeight: 1.4,
+    width: 200
   },
   content: {
     padding: 20
@@ -284,7 +286,7 @@ const styles = StyleSheet.create({
 });
 
 // PDF Document Component
-const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
+const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | null }> = ({ invoice, headerConfig }) => {
   const t = getTranslation(invoice.language);
   let services: any = [];
   if(invoice.belowMinimum) {
@@ -338,16 +340,19 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Image
-            style={styles.logo}
-            src="/2.png"
-          />
+          {headerConfig?.logo && (
+            <Image
+              style={styles.logo}
+              src={headerConfig.logo}
+            />
+          )}
           <View style={styles.companyInfo}>
-            <Text style={styles.companyName}>PT Finskor Teknologi Indonesia</Text>
+            <Text style={styles.companyName}>
+              {headerConfig?.companyName}
+            </Text>
             <Text style={styles.companyAddress}>
-              Gedung AD Premier Lt 9, Jl. TB Simatupang No.5,{'\n'}
-              RT.5/RW.7, Ps. Minggu, Jakarta Selatan{'\n'}
-              support@fineksi.com
+              {headerConfig?.companyAddress}{'\n'}
+              {headerConfig?.companyEmail}
             </Text>
           </View>
         </View>
@@ -468,11 +473,11 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
                 <View style={styles.signatureContainer}>
                   <Image
                     style={styles.signatureImage}
-                    src="/sig.png"
+                    src={headerConfig?.signature}
                   />
                   <Image
                     style={styles.stampImage}
-                    src="/stamp.png"
+                    src={headerConfig?.stamp}
                   />
                 </View>
                 <View style={styles.signatureLine} />
@@ -505,9 +510,9 @@ const InvoicePDF: React.FC<{ invoice: Invoice }> = ({ invoice }) => {
 };
 
 // Export function to generate and download PDF
-export const generateInvoicePDF = async (invoice: Invoice): Promise<void> => {
+export const generateInvoicePDF = async (invoice: Invoice, headerConfig?: HeaderConfig | null): Promise<void> => {
   try {
-    const blob = await pdf(<InvoicePDF invoice={invoice} />).toBlob();
+    const blob = await pdf(<InvoicePDF invoice={invoice} headerConfig={headerConfig} />).toBlob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;

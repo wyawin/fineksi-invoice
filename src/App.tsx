@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Invoice } from './types/Invoice';
+import { HeaderConfig } from './types/HeaderConfig';
 import ExcelUploader from './components/ExcelUploader';
+import JsonConfigUploader from './components/JsonConfigUploader';
 import InvoiceList from './components/InvoiceList';
 import { generateInvoicePDF } from './utils/pdfGenerator.tsx';
 import { Receipt, Sparkles, Calendar } from 'lucide-react';
@@ -9,6 +11,7 @@ function App() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showUploader, setShowUploader] = useState(true);
+  const [headerConfig, setHeaderConfig] = useState<HeaderConfig | null>(null);
   
   // Date states
   const [invoiceDate, setInvoiceDate] = useState(() => {
@@ -41,8 +44,12 @@ function App() {
     setShowUploader(false);
   };
 
+  const handleConfigLoaded = (config: HeaderConfig) => {
+    setHeaderConfig(config);
+  };
+
   const handleGeneratePDF = (invoice: Invoice) => {
-    generateInvoicePDF(invoice).catch(error => {
+    generateInvoicePDF(invoice, headerConfig).catch(error => {
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again.');
     });
@@ -81,6 +88,11 @@ function App() {
         {/* Main Content */}
         {showUploader && (
           <>
+            <JsonConfigUploader 
+              onConfigLoaded={handleConfigLoaded}
+              currentConfig={headerConfig}
+            />
+            
             {/* Date Selection Section */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center gap-3 mb-4">
