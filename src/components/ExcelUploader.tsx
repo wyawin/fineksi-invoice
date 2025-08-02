@@ -31,12 +31,16 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         // Transform Excel data to Invoice format
         const invoices: Invoice[] = jsonData.map((row: any, index: number) => {
+          // set Due Date
+          const invoiceDate = dateOverrides.invoiceDate;
+          const invoiceDateType = new Date(invoiceDate)
+          const dueDate = new Date(invoiceDateType.setDate((new Date(invoiceDate)).getDate() +  Number(row['PaymentTerms']))).toISOString().split('T')[0]
           return (
             {
               id: (index + 1).toString(),
               invoiceNumber: row['InvoiceNumber'] || `${String(index + 1).padStart(3, '0')}`,
               date: dateOverrides.invoiceDate || new Date().toISOString().split('T')[0],
-              dueDate: row['Due Date'] || new Date(new Date().setDate((new Date(dateOverrides.invoiceDate)).getDate() + Number(row['PaymentTerms']))).toISOString().split('T')[0],
+              dueDate: dueDate,
               status: (row['Status']?.toLowerCase() || 'draft') as 'draft' | 'sent' | 'paid' | 'overdue',
               client: {
                 name: row['Client'] || 'Unknown Client',

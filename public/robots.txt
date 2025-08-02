@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /
+
+# Prevent all search engines from indexing this site
+# This is a private invoice generator application
+Crawl-delay: 86400
