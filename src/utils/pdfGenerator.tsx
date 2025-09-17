@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   invoiceTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#666666',
     marginBottom: 10,
   },
   invoiceDetailsSection: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#666666',
     marginBottom: 10,
   },
   clientInfo: {
@@ -158,13 +158,13 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     fontSize: 10,
-    color: '#000000',
+    color: '#666666',
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 200,
-    borderTop: '1 solid #000000',
+    borderTop: '1 solid #666666',
     paddingTop: 8,
     marginTop: 8,
   },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 200,
-    borderBottom: '1 solid #000000',
+    borderBottom: '1 solid #666666',
     paddingBottom: 8,
     marginBottom: 8,
   },
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   signatureTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#666666',
     marginBottom: 20,
   },
   signatureBox: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     color: '#666666',
   },
   signatureLine: {
-    borderBottom: '1 solid #000000',
+    borderBottom: '1 solid #666666',
     width: '100%',
     marginBottom: 5,
     marginTop: 100,
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   paymentInfoTitle: {
     fontSize: 11,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#666666',
     marginBottom: 8,
   },
   footer: {
