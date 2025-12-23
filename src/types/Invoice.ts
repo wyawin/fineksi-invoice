@@ -67,4 +67,7 @@ export interface Invoice {
   emailSent: boolean;
   tanggalPelunasan: string;
   showDecimalItem: boolean;
+  customItems?: string;
+  customItemsQty?: string;
+  customItemsPrice?: string;
 }

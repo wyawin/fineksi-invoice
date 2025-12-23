@@ -96,7 +96,10 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
               pefindoGUAmount: Number(row['Pefindo GU Amount']) || 0,
               taxRounding: row['taxRounding'],
               emailSent: Boolean(row['Email Sent']),
-              tanggalPelunasan: row['Tanggal Pelunsan'] || ''
+              tanggalPelunasan: row['Tanggal Pelunsan'] || '',
+              customItems: row['Custom Items'] || '',
+              customItemsQty: row['Custom Items Qty'] || '',
+              customItemsPrice: row['Custom Items Price'] || ''
             }
           )
         }

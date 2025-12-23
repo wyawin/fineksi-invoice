@@ -1,8 +1,21 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, Image, pdf } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, Image, pdf, Font } from '@react-pdf/renderer';
 import { Invoice } from '../types/Invoice';
 import { HeaderConfig } from '../types/HeaderConfig';
 import { getTranslation } from './translations';
+
+Font.register({
+  family: 'NotoSans',
+  src: 'https://fonts.gstatic.com/s/notosans/v27/o-0IIpQlx3QUlC5A4PNb4j5Ba_2c7A.ttf', // Example URL, adjust if needed
+  fontWeight: 'normal',
+  fontStyle: 'normal',
+});
+
+Font.register({
+  family: 'NotoSans',
+  src: 'https://fonts.gstatic.com/s/notosans/v27/o-0IIpQlx3QUlC5A4PNb4j5Ba_2c7A.ttf',
+  fontWeight: 'bold',
+});
 
 const formatCurrency = (amount: any, showDecimalItem: boolean = false) => {
   return new Intl.NumberFormat('en-US', {
@@ -23,6 +36,9 @@ const formatDate = (date: any, language: string) => {
 
 // Define styles for the PDF
 const styles = StyleSheet.create({
+  body: {
+    fontFamily: 'NotoSans', // Must match the registered family
+  },
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
@@ -99,7 +115,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#374151',
     lineHeight: 1.5,
-    width: 250,
+    width: 210,
+    // fontFamily: 'NotoSans',
   },
   table: {
     marginBottom: 30,
@@ -289,21 +306,60 @@ const styles = StyleSheet.create({
 const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | null }> = ({ invoice, headerConfig }) => {
   const t = getTranslation(invoice.language);
   let services: any = [];
-  if(invoice.belowMinimum) {
-    services = [
-      { name: t.services.minimumCommitment, usage: 1, pricing: invoice.grossUpAmount, total: Math.round(1 * invoice.grossUpAmount) }
-    ]
+
+  // Parse custom items if they exist
+  const parseCustomItems = () => {
+    if (!invoice.customItems || !invoice.customItemsQty || !invoice.customItemsPrice) {
+      return [];
+    }
+
+    const descriptions = invoice.customItems.split('|').map(s => s.trim()).filter(s => s);
+    const quantities = invoice.customItemsQty.split('|').map(s => s.trim()).filter(s => s);
+    const prices = invoice.customItemsPrice.split('|').map(s => s.trim()).filter(s => s);
+
+    const customServices = [];
+    const length = Math.min(descriptions.length, quantities.length, prices.length);
+
+    for (let i = 0; i < length; i++) {
+      const qty = Number(quantities[i]) || 0;
+      const price = Number(prices[i]) || 0;
+      if(qty > 0) {
+        customServices.push({
+          name: descriptions[i],
+          usage: qty,
+          pricing: price,
+          total: Math.round(qty * price)
+        });
+      }
+      
+    }
+
+    return customServices;
+  };
+
+  const customItems = parseCustomItems();
+
+  
+  if(customItems.length > 0) {
+    services = [...customItems];
   } else {
-    services = [
-      { name: t.services.bankStatement, usage: invoice.usageBankStatement, pricing: invoice.bsGUAmount, total: Math.round(invoice.usageBankStatement * invoice.bsGUAmount) },
-      { name: t.services.freeBankStatement, usage: invoice.freeBankStatement * -1, pricing: invoice.bsGUAmount, total: Math.round(invoice.freeBankStatement * invoice.bsGUAmount * -1) },
-      { name: t.services.creditHistory, usage: invoice.usageSLIK, pricing: invoice.slikGUAmount, total: Math.round(invoice.usageSLIK * invoice.slikGUAmount) },
-      { name: t.services.freeCreditHistory, usage: invoice.freeSLIK * -1, pricing: invoice.slikGUAmount, total: Math.round(invoice.freeSLIK * invoice.slikGUAmount * -1) },
-      { name: t.services.income, usage: invoice.usageIncome, pricing: invoice.incomeGUAmount, total: Math.round(invoice.usageIncome * invoice.incomeGUAmount) },
-      { name: t.services.idp, usage: invoice.usageInvoice, pricing: invoice.idpGUAmount, total: Math.round(invoice.usageInvoice * invoice.idpGUAmount) },
-      { name: t.services.idp, usage: invoice.freeInvoice * -1, pricing: invoice.idpGUAmount, total: Math.round(invoice.freeInvoice * invoice.idpGUAmount * -1) }
-    ].filter(service => Math.abs(service.usage) > 0);
+    if(invoice.belowMinimum) {
+      services = [
+        { name: t.services.minimumCommitment, usage: 1, pricing: invoice.grossUpAmount, total: Math.round(1 * invoice.grossUpAmount) }
+      ]
+    } else {
+      services = [
+        { name: t.services.bankStatement, usage: invoice.usageBankStatement, pricing: invoice.bsGUAmount, total: Math.round(invoice.usageBankStatement * invoice.bsGUAmount) },
+        { name: t.services.freeBankStatement, usage: invoice.freeBankStatement * -1, pricing: invoice.bsGUAmount, total: Math.round(invoice.freeBankStatement * invoice.bsGUAmount * -1) },
+        { name: t.services.creditHistory, usage: invoice.usageSLIK, pricing: invoice.slikGUAmount, total: Math.round(invoice.usageSLIK * invoice.slikGUAmount) },
+        { name: t.services.freeCreditHistory, usage: invoice.freeSLIK * -1, pricing: invoice.slikGUAmount, total: Math.round(invoice.freeSLIK * invoice.slikGUAmount * -1) },
+        { name: t.services.income, usage: invoice.usageIncome, pricing: invoice.incomeGUAmount, total: Math.round(invoice.usageIncome * invoice.incomeGUAmount) },
+        { name: t.services.idp, usage: invoice.usageInvoice, pricing: invoice.idpGUAmount, total: Math.round(invoice.usageInvoice * invoice.idpGUAmount) },
+        { name: t.services.idp, usage: invoice.freeInvoice * -1, pricing: invoice.idpGUAmount, total: Math.round(invoice.freeInvoice * invoice.idpGUAmount * -1) }
+      ].filter(service => Math.abs(service.usage) > 0);
+    }
   }
+  
   
 
   const totalSummary: any = () => {
@@ -404,7 +460,14 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
           </View>
 
           {/* Summary Section */}
-          {invoice.grossUpInAdvance ? 
+          {(!invoice.grossUp || invoice.grossUp === 0) ? (
+            <View style={styles.summarySection}>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>{t.totalAmount}:</Text>
+                <Text style={styles.totalValue}>{formatCurrency(totalSummary().amountGrossUp)}</Text>
+              </View>
+            </View>
+          ) : invoice.grossUpInAdvance ?
             <View style={styles.summarySection}>
               <View style={styles.totalRowInAdvance}>
                 <Text style={styles.totalLabel}>{t.totalAmount}:</Text>
@@ -420,7 +483,7 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
                 <Text style={styles.summaryValue}>{formatCurrency(totalSummary().taxAmount)}</Text>
               </View>
 
-              
+
             </View>
             :
             <View style={styles.summarySection}>
