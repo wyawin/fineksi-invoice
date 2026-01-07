@@ -364,17 +364,36 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
 
   const totalSummary: any = () => {
     const totalAmount = services.reduce((acc: Number, currentValue: any) => acc + currentValue.total, 0);
-    if(invoice.grossUpInAdvance) {
-      const divider = 100 - invoice.grossUp;
-      const amountGrossUp = Math.round((totalAmount / divider) * 100);
-      const taxAmount = amountGrossUp - totalAmount;
 
-      return {
-        amountGrossUp: amountGrossUp,
-        taxAmount,
-        amountNet: totalAmount
+    // Check if Need Gross Up is true or false
+    if(invoice.needGrossUp) {
+      // Use existing grossUpInAdvance logic
+      if(invoice.grossUpInAdvance) {
+        const divider = 100 - invoice.grossUp;
+        const amountGrossUp = Math.round((totalAmount / divider) * 100);
+        const taxAmount = amountGrossUp - totalAmount;
+
+        return {
+          amountGrossUp: amountGrossUp,
+          taxAmount,
+          amountNet: totalAmount
+        }
+      } else {
+        let taxAmount = 0;
+        if(invoice.taxRounding === "normalRound") {
+          taxAmount = Math.round((totalAmount * invoice.grossUp )/100);
+        } else {
+          taxAmount = Math.floor((totalAmount * invoice.grossUp)/100);
+        }
+        const amountNet = totalAmount - taxAmount;
+        return {
+          amountGrossUp: totalAmount,
+          taxAmount,
+          amountNet
+        }
       }
     } else {
+      // Need Gross Up is FALSE: multiply total amount by GrossUp number
       let taxAmount = 0;
       if(invoice.taxRounding === "normalRound") {
         taxAmount = Math.round((totalAmount * invoice.grossUp )/100);
@@ -388,7 +407,7 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
         amountNet
       }
     }
-    
+
   }
 
   return (
@@ -488,7 +507,7 @@ const InvoicePDF: React.FC<{ invoice: Invoice; headerConfig?: HeaderConfig | nul
             :
             <View style={styles.summarySection}>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>{t.totalAmountGrossUp}:</Text>
+                <Text style={styles.summaryLabel}>{invoice.needGrossUp ? t.totalAmountGrossUp : t.amount}:</Text>
                 <Text style={styles.summaryValue}>{formatCurrency(totalSummary().amountGrossUp)}</Text>
               </View>
 

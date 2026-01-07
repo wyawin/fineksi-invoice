@@ -62,6 +62,7 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded, dateOverrid
               withSignature: Boolean(handleTrueFalse(row['WithSignature'])),
               withTaxCode: Boolean(handleTrueFalse(row['WithTaxCode'])),
               grossUpInAdvance: Boolean(handleTrueFalse(row['GrossUpInAdvance'])),
+              needGrossUp: Boolean(handleTrueFalse(row['Need Gross Up'])),
               showDecimalItem: Boolean(handleTrueFalse(row['Show Decimals Items'])),
               totalAll: Number(row['Total All']) || 0,
               amountWhichShouldInvoice: Number(row['Amount Which Should Invoice']) || 0,

@@ -32,6 +32,7 @@ export interface Invoice {
   withSignature: boolean;
   withTaxCode: boolean;
   grossUpInAdvance: boolean;
+  needGrossUp: boolean;
   totalAll: number;
   amountWhichShouldInvoice: number;
   discount: number;
